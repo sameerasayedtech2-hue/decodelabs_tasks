@@ -1,38 +1,74 @@
-# Project 1: Rule-Based AI Chatbot
+# Project 2: Data Classification Using AI
+
+**DecodeLabs — Industrial Training Kit | Batch 2026**
+
+---
 
 ## Overview
-This is a simple rule-based chatbot built in Python as part of the DecodeLabs
-AI Internship Training Kit. It responds to predefined user inputs using
-if-elif-else logic and runs in a continuous loop until the user exits.
 
-## Features
-- Handles greetings (hello, hi, hey)
-- Answers basic predefined questions (how are you, what is your name)
-- Provides a fallback response for unrecognized input
-- Runs in a continuous loop using `while True`
-- Exits cleanly when the user types "bye" or "exit"
+This project implements a **supervised machine learning pipeline** that classifies iris flowers into one of **three species** (*setosa*, *versicolor*, *virginica*) based on four physical measurements. It follows the **Input → Process → Output (IPO)** framework taught in the training kit.
+
+## Goal
+
+Build a basic classification model using a small dataset (Iris) — proving the ability to **train, test, and validate** an AI model through supervised learning.
+
+## Dataset
+
+The built-in **Iris dataset** from scikit-learn:
+
+- **150 samples**, perfectly balanced across 3 classes (50 each)
+- **4 features**: sepal length, sepal width, petal length, petal width (all in cm)
+- **Target**: species (setosa / versicolor / virginica)
+
+## Pipeline
+
+| Stage | What happens |
+|---|---|
+| **Input** | Load Iris dataset → inspect shape/class balance → scale features with `StandardScaler` |
+| **Process** | **80/20 stratified train-test split** → select best K via elbow method → train `KNeighborsClassifier` |
+| **Output** | Confusion matrix, classification report, **accuracy**, and **F1 score** |
+
+## Requirements
+
+```bash
+pip install scikit-learn pandas matplotlib seaborn
+```
 
 ## How to Run
-1. Make sure Python is installed on your system.
-2. Open a terminal in this folder.
-3. Run the file:    python chatbot.py
-4. Type messages when prompted with "You: "
-5. Type "bye" to exit the chatbot.
 
-## Key Concepts Used
-- Control flow (if-elif-else)
-- Loops (while)
-- String handling (.lower(), .strip())
-- Basic decision-making logic
+```bash
+python iris_classifier.py
+```
 
-## Example Interaction
-Bot: Hello! I am your AI Chatbot. Type 'bye' to exit.
+## Files
 
-You: hello
-Bot: Hello! Nice to meet you.
+| File | Description |
+|---|---|
+| `iris_classifier.py` | Main script — full pipeline from data loading to evaluation |
+| `k_selection_elbow.png` | Error rate vs. K plot, used to pick the optimal number of neighbors |
+| `confusion_matrix.png` | Heatmap of predicted vs. actual species on the test set |
 
-You: how are you
-Bot: I am doing great! Thanks for asking.
+## Key Skills Demonstrated
 
-You: bye
-Bot: Goodbye! Have a great day!
+- Data loading and exploratory inspection
+- Train/test splitting with stratification
+- **Feature scaling** (fit on train, transform on test — avoiding data leakage)
+- Hyperparameter selection (choosing K via error-rate elbow)
+- Model training and prediction with scikit-learn's `fit` / `predict` workflow
+- Model evaluation **beyond raw accuracy**: confusion matrix, precision, recall, F1 score
+
+## Results
+
+| Metric | Score |
+|---|---|
+| **Best K** | **1** |
+| **Accuracy** | **96.67%** |
+| **F1 Score (macro)** | **0.9666** |
+
+> **Important:** The only misclassification was **one *virginica* sample predicted as *versicolor*** — these two species have known overlap in petal measurements, so this is an expected edge case, not a model flaw. *Setosa* was classified with **perfect accuracy**, as it's linearly separable from the other two species.
+
+## Notes
+
+- `random_state=42` is used throughout for **reproducibility**.
+- Scaling is fit **only on the training set** and applied to the test set — this prevents test-data leakage into the model.
+- **Accuracy alone can be misleading** on imbalanced datasets (the "Accuracy Mirage"). Since Iris classes are balanced here, accuracy is a fair metric — but F1 score and the confusion matrix are included regardless, as best practice.
